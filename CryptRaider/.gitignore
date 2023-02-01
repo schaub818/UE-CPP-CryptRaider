@@ -72,3 +72,13 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Example Assets
+Content/__External**/*
+Content/FirstPerson/*
+Content/FirstPersonArms/*
+Content/FPWeapon/*
+Content/LevelPrototyping/*
+
+# Marketplace Assets
+Content/MedievalDungeon/*
