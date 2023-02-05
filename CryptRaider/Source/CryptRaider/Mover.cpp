@@ -20,7 +20,11 @@ void UMover::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	AActor* Owner = GetOwner();
+	FVector OwnerPos = Owner->GetActorLocation();
+	FString PosText = OwnerPos.ToCompactString();
 
+	UE_LOG(LogTemp, Display, TEXT("Address of Owner: %s"), *PosText);
 }
 
 
@@ -30,6 +34,5 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	UE_LOG(LogTemp, Display, TEXT("This is a message"));
 }
 
