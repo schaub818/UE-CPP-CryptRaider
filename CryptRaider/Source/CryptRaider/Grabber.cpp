@@ -31,7 +31,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FVector start = GetComponentLocation();
+	/*FVector start = GetComponentLocation();
 	FVector end = start + GetForwardVector() * MaxGrabDistance;
 
 	FCollisionShape sphere = FCollisionShape::MakeSphere(GrabRadius);
@@ -49,6 +49,6 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	else
 	{
 		UE_LOG(LogTemp, Display, TEXT("Hit actor: none"));
-	}
+	}*/
 }
 
