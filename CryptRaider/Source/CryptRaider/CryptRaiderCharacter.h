@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Grabber.h"
 #include "CryptRaiderCharacter.generated.h"
 
 class UInputComponent;
@@ -39,7 +40,12 @@ class ACryptRaiderCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* MoveAction;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	class UInputAction* GrabAction;
+
+private:
+	UGrabber* grabber;
+
 public:
 	ACryptRaiderCharacter();
 
@@ -47,7 +53,7 @@ protected:
 	virtual void BeginPlay();
 
 public:
-		
+
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
@@ -70,6 +76,9 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	void Grab(const FInputActionValue& Value);
+	void Release(const FInputActionValue& Value);
 
 protected:
 	// APawn interface

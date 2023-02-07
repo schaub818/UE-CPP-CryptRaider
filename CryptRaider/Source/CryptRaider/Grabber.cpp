@@ -20,9 +20,6 @@ UGrabber::UGrabber()
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-
 }
 
 
@@ -52,3 +49,12 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	}*/
 }
 
+void UGrabber::Grab()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Grabbed!")));
+}
+
+void UGrabber::Release()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Released!")));
+}

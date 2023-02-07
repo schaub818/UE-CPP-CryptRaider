@@ -16,11 +16,11 @@ ACryptRaiderCharacter::ACryptRaiderCharacter()
 {
 	// Character doesnt have a rifle at start
 	bHasRifle = false;
-	
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
-		
-	// Create a CameraComponent	
+
+	// Create a CameraComponent
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
@@ -39,7 +39,7 @@ ACryptRaiderCharacter::ACryptRaiderCharacter()
 
 void ACryptRaiderCharacter::BeginPlay()
 {
-	// Call the base class  
+	// Call the base class
 	Super::BeginPlay();
 
 	//Add Input Mapping Context
@@ -51,6 +51,7 @@ void ACryptRaiderCharacter::BeginPlay()
 		}
 	}
 
+	grabber = GetOwner()->FindComponentByClass<UGrabber>();
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -69,6 +70,10 @@ void ACryptRaiderCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACryptRaiderCharacter::Look);
+
+		//Grabbing
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &ACryptRaiderCharacter::Grab);
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Completed, this, &ACryptRaiderCharacter::Release);
 	}
 }
 
@@ -80,7 +85,7 @@ void ACryptRaiderCharacter::Move(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
-		// add movement 
+		// add movement
 		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 		AddMovementInput(GetActorRightVector(), MovementVector.X);
 	}
@@ -97,6 +102,16 @@ void ACryptRaiderCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ACryptRaiderCharacter::Grab(const FInputActionValue& Value)
+{
+	grabber->Grab();
+}
+
+void ACryptRaiderCharacter::Release(const FInputActionValue& Value)
+{
+	grabber->Release();
 }
 
 void ACryptRaiderCharacter::SetHasRifle(bool bNewHasRifle)
