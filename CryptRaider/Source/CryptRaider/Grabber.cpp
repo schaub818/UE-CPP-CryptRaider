@@ -4,6 +4,7 @@
 #include "Grabber.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/World.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -20,6 +21,8 @@ UGrabber::UGrabber()
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 }
 
 
@@ -27,26 +30,6 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	/*FVector start = GetComponentLocation();
-	FVector end = start + GetForwardVector() * MaxGrabDistance;
-
-	FCollisionShape sphere = FCollisionShape::MakeSphere(GrabRadius);
-
-	FHitResult hitResult;
-
-	DrawDebugLine(GetWorld(), start, end, FColor::Red);
-
-	bool hit = GetWorld()->SweepSingleByChannel(hitResult, start, end, FQuat::Identity, ECC_GameTraceChannel2, sphere);
-
-	if (hit)
-	{
-		UE_LOG(LogTemp, Display, TEXT("Hit actor: %s"), *hitResult.GetActor()->GetActorNameOrLabel());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Display, TEXT("Hit actor: none"));
-	}*/
 }
 
 void UGrabber::Grab()
@@ -58,13 +41,20 @@ void UGrabber::Grab()
 
 	FHitResult hitResult;
 
-	//DrawDebugLine(GetWorld(), start, end, FColor::Red);
+	DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 5.0f);
+	DrawDebugSphere(GetWorld(), end, 10, 10, FColor::Blue, false, 5.0f);
 
 	bool hit = GetWorld()->SweepSingleByChannel(hitResult, start, end, FQuat::Identity, ECC_GameTraceChannel2, sphere);
 
 	if (hit)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Grabbed!")));
+
+		FVector location = hitResult.Location;
+		DrawDebugSphere(GetWorld(), location, 10, 10, FColor::Red, false, 5.0f);
+
+		location = hitResult.ImpactPoint;
+		DrawDebugSphere(GetWorld(), location, 10, 10, FColor::Green, false, 5.0f);
+
 		grabbed = true;
 	}
 }
@@ -73,7 +63,6 @@ void UGrabber::Release()
 {
 	if (grabbed)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Released!")));
 		grabbed = false;
 	}
 }
