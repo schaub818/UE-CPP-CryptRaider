@@ -34,6 +34,9 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 	for (auto actor : actors)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("%s"), *actor->GetActorNameOrLabel()));
+		if (actor->ActorHasTag(statueTag))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Unlocking")));
+		}
 	}
 }
