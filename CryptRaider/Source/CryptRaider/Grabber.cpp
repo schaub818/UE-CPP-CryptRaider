@@ -4,7 +4,6 @@
 #include "Grabber.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/World.h"
-#include "PhysicsEngine/PhysicsHandleComponent.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -22,7 +21,12 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	physicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+
+	if (physicsHandle == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player blueprint does not have a physics handle component."));
+	}
 }
 
 
@@ -30,10 +34,26 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (physicsHandle == nullptr)
+	{
+		return;
+	}
+
+	if (grabbed)
+	{
+		FVector targetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
+		physicsHandle->SetTargetLocationAndRotation(targetLocation, GetComponentRotation());
+	}
 }
 
 void UGrabber::Grab()
 {
+	if (physicsHandle == nullptr)
+	{
+		return;
+	}
+
 	FVector start = GetComponentLocation();
 	FVector end = start + GetForwardVector() * MaxGrabDistance;
 
@@ -48,12 +68,7 @@ void UGrabber::Grab()
 
 	if (hit)
 	{
-
-		FVector location = hitResult.Location;
-		DrawDebugSphere(GetWorld(), location, 10, 10, FColor::Red, false, 5.0f);
-
-		location = hitResult.ImpactPoint;
-		DrawDebugSphere(GetWorld(), location, 10, 10, FColor::Green, false, 5.0f);
+		physicsHandle->GrabComponentAtLocationWithRotation(hitResult.GetComponent(), NAME_None, hitResult.ImpactPoint, GetComponentRotation());
 
 		grabbed = true;
 	}
