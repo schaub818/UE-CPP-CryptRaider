@@ -50,8 +50,6 @@ void ACryptRaiderCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
-	grabber = GetOwner()->FindComponentByClass<UGrabber>();
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -70,10 +68,6 @@ void ACryptRaiderCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACryptRaiderCharacter::Look);
-
-		//Grabbing
-		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &ACryptRaiderCharacter::Grab);
-		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Completed, this, &ACryptRaiderCharacter::Release);
 	}
 }
 
@@ -102,16 +96,6 @@ void ACryptRaiderCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
-}
-
-void ACryptRaiderCharacter::Grab(const FInputActionValue& Value)
-{
-	grabber->Grab();
-}
-
-void ACryptRaiderCharacter::Release(const FInputActionValue& Value)
-{
-	grabber->Release();
 }
 
 void ACryptRaiderCharacter::SetHasRifle(bool bNewHasRifle)

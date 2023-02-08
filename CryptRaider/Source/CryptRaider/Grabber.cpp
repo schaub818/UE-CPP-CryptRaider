@@ -51,10 +51,29 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 void UGrabber::Grab()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Grabbed!")));
+	FVector start = GetComponentLocation();
+	FVector end = start + GetForwardVector() * MaxGrabDistance;
+
+	FCollisionShape sphere = FCollisionShape::MakeSphere(GrabRadius);
+
+	FHitResult hitResult;
+
+	//DrawDebugLine(GetWorld(), start, end, FColor::Red);
+
+	bool hit = GetWorld()->SweepSingleByChannel(hitResult, start, end, FQuat::Identity, ECC_GameTraceChannel2, sphere);
+
+	if (hit)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Grabbed!")));
+		grabbed = true;
+	}
 }
 
 void UGrabber::Release()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Released!")));
+	if (grabbed)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Released!")));
+		grabbed = false;
+	}
 }

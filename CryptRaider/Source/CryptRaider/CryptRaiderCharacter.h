@@ -40,12 +40,6 @@ class ACryptRaiderCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* MoveAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* GrabAction;
-
-private:
-	UGrabber* grabber;
-
 public:
 	ACryptRaiderCharacter();
 
