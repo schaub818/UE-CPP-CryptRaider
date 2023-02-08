@@ -28,6 +28,18 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (GetAcceptableActor() != nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Unlocking")));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Relocking")));
+	}
+}
+
+AActor* UTriggerComponent::GetAcceptableActor() const
+{
 	TArray<AActor*> actors;
 
 	GetOverlappingActors(actors);
@@ -36,7 +48,9 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	{
 		if (actor->ActorHasTag(statueTag))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Unlocking")));
+			return actor;
 		}
 	}
+
+	return nullptr;
 }

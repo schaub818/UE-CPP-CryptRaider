@@ -28,5 +28,7 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere)
-		FName statueTag;
+	FName statueTag;
+
+	AActor* GetAcceptableActor() const;
 };
