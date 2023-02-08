@@ -47,11 +47,13 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	}
 }
 
-void UGrabber::Grab()
+bool UGrabber::GetGrabbableInReach(FHitResult& outHitResult) const
 {
 	if (physicsHandle == nullptr)
 	{
-		return;
+		UE_LOG(LogTemp, Error, TEXT("Player blueprint does not have a physics handle component."));
+
+		return false;
 	}
 
 	FVector start = GetComponentLocation();
@@ -59,14 +61,14 @@ void UGrabber::Grab()
 
 	FCollisionShape sphere = FCollisionShape::MakeSphere(GrabRadius);
 
+	return GetWorld()->SweepSingleByChannel(outHitResult, start, end, FQuat::Identity, ECC_GameTraceChannel2, sphere);
+}
+
+void UGrabber::Grab()
+{
 	FHitResult hitResult;
 
-	DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 5.0f);
-	DrawDebugSphere(GetWorld(), end, 10, 10, FColor::Blue, false, 5.0f);
-
-	bool hit = GetWorld()->SweepSingleByChannel(hitResult, start, end, FQuat::Identity, ECC_GameTraceChannel2, sphere);
-
-	if (hit)
+	if (GetGrabbableInReach(hitResult))
 	{
 		UPrimitiveComponent* hitComponent = hitResult.GetComponent();
 
@@ -81,6 +83,8 @@ void UGrabber::Release()
 {
 	if (physicsHandle == nullptr)
 	{
+		UE_LOG(LogTemp, Error, TEXT("Player blueprint does not have a physics handle component."));
+
 		return;
 	}
 
