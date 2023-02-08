@@ -28,5 +28,12 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	TArray<AActor*> actors;
+
+	GetOverlappingActors(actors);
+
+	if (actors.Num() > 0)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("%s"), *actors[0]->GetActorNameOrLabel()));
+	}
 }
