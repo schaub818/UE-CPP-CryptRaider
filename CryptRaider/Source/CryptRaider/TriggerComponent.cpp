@@ -28,14 +28,19 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GetAcceptableActor() != nullptr)
+	if (GetAcceptableActor() != nullptr && mover != nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Unlocking")));
+		mover->SetShouldMove(true);
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("Relocking")));
+		mover->SetShouldMove(false);
 	}
+}
+
+void UTriggerComponent::SetMover(UMover* newMover)
+{
+	mover = newMover;
 }
 
 AActor* UTriggerComponent::GetAcceptableActor() const
