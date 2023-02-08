@@ -32,8 +32,8 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 	GetOverlappingActors(actors);
 
-	if (actors.Num() > 0)
+	for (auto actor : actors)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("%s"), *actors[0]->GetActorNameOrLabel()));
+		GEngine->AddOnScreenDebugMessage(-1, 0.35f, FColor::Cyan, FString::Printf(TEXT("%s"), *actor->GetActorNameOrLabel()));
 	}
 }
