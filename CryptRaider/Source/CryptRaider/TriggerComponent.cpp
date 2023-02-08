@@ -28,8 +28,17 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GetAcceptableActor() != nullptr && mover != nullptr)
+	AActor* actor = GetAcceptableActor();
+
+	if (mover && actor)
 	{
+		UPrimitiveComponent* component = Cast<UPrimitiveComponent>(actor->GetRootComponent());
+
+		if (component && !actor->ActorHasTag("Grabbed"))
+		{
+			component->SetSimulatePhysics(false);
+		}
+
 		mover->SetShouldMove(true);
 	}
 	else
@@ -40,7 +49,10 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void UTriggerComponent::SetMover(UMover* newMover)
 {
-	mover = newMover;
+	if (newMover)
+	{
+		mover = newMover;
+	}
 }
 
 AActor* UTriggerComponent::GetAcceptableActor() const

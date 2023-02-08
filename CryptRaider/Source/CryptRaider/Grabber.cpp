@@ -23,7 +23,7 @@ void UGrabber::BeginPlay()
 
 	physicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 
-	if (physicsHandle == nullptr)
+	if (!physicsHandle)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Player blueprint does not have a physics handle component."));
 	}
@@ -35,12 +35,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (physicsHandle == nullptr)
-	{
-		return;
-	}
-
-	if (grabbed)
+	if (physicsHandle && grabbed)
 	{
 		FVector targetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
 		physicsHandle->SetTargetLocationAndRotation(targetLocation, GetComponentRotation());
@@ -49,7 +44,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 bool UGrabber::GetGrabbableInReach(FHitResult& outHitResult) const
 {
-	if (physicsHandle == nullptr)
+	if (!physicsHandle)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Player blueprint does not have a physics handle component."));
 
@@ -72,7 +67,9 @@ void UGrabber::Grab()
 	{
 		UPrimitiveComponent* hitComponent = hitResult.GetComponent();
 
+		hitComponent->SetSimulatePhysics(true);
 		hitComponent->WakeAllRigidBodies();
+		hitResult.GetActor()->Tags.Add("Grabbed");
 		physicsHandle->GrabComponentAtLocationWithRotation(hitComponent, NAME_None, hitResult.ImpactPoint, GetComponentRotation());
 
 		grabbed = true;
@@ -81,15 +78,9 @@ void UGrabber::Grab()
 
 void UGrabber::Release()
 {
-	if (physicsHandle == nullptr)
+	if (physicsHandle && grabbed)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Player blueprint does not have a physics handle component."));
-
-		return;
-	}
-
-	if (grabbed)
-	{
+		physicsHandle->GetGrabbedComponent()->GetOwner()->Tags.Remove("Grabbed");
 		physicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
 		physicsHandle->ReleaseComponent();
 
